@@ -1,0 +1,1 @@
+export { PeopleGetJobSkillsService } from './getSkills'

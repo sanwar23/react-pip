@@ -2,6 +2,17 @@
   text-align: center;
 }
 
+.header-title {
+  margin: 0 0 15px 0 !important;
+  padding: 15px;
+  border: 1px solid #dbdbdb;
+  border-width: 1px 0 1px 0;
+}
+
+.field-title {
+  text-align: right;
+}
+
 .mtb-20 {
   margin: 20px 0;
 }

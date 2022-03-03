@@ -1,32 +1,37 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import App from "./App";
-import { createStore, applyMiddleware, compose } from "redux";
-import rootReducer from "./reducers";
-import { Provider } from "react-redux";
-import createSagaMiddleware from "redux-saga";
-import rootSaga from "./saga/saga";
+import App from './App';
+import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './redux-saga/reducers';
+import { Provider } from 'react-redux';
+import createSagaMiddleware from 'redux-saga';
+import rootSaga from './redux-saga/saga/saga';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+
+import { createBrowserHistory } from 'history';
+
+export const history = createBrowserHistory();
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-  rootReducer,
+  rootReducer(history),
   compose(
-    applyMiddleware(sagaMiddleware),
+    applyMiddleware(sagaMiddleware, routerMiddleware(history)),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );
 
 sagaMiddleware.run(rootSaga);
 
-console.log(store);
-
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ConnectedRouter history={history}>
+      <App />
+    </ConnectedRouter>
   </Provider>,
-  document.getElementById("root")
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

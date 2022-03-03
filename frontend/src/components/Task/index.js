@@ -1,12 +1,12 @@
-import React from "react";
-import { Container } from "@material-ui/core";
-import Header from "../Header";
-import Form from "./form";
+import React from 'react';
+import { Container } from '@material-ui/core';
+import Header from '../Header';
+import Form from './form';
 
 const Task = () => {
   return (
     <Container>
-      <Header />
+      <Header title="Create Issue" />
       <Form />
     </Container>
   );
