@@ -23,7 +23,7 @@ class ApiClient {
 
   putRequest = (url, config) => this.makeRequest(url, 'put', config);
 
-  postRequest = (url, config) => this.makeRequest(url, 'post', config);
+  postRequest = async (url, config) => this.makeRequest(url, 'post', config);
 
   deleteRequest = (url, config) => this.makeRequest(url, 'delete', config);
 }

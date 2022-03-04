@@ -29,6 +29,22 @@ class TaskActions {
       milestone,
     };
     console.log('---------- task action in');
+
+    const promises = group.map((groupId) => {
+      return () => this.client.post(`/projects/${groupId}/issues`, body);
+      /* axios({
+           url: `${url}/projects/${groupId}/issues`,
+           method: 'post',
+           data: reqData,
+           headers: headers,
+         }); */
+    });
+    return promises;
+    // const responseArray = await Promise.all(
+    //   promises.map((promise) => promise())
+    // );
+    // console.log('))))))))))-----------)))))))))', responseArray.statusCode);
+
     /*   let resultArr = [];
     let arr = Promise.all(
       group.map((grp) => {
@@ -69,9 +85,9 @@ class TaskActions {
     console.log('---------- task action in end', arr); */
     // return arr;
     // return resultArr;
-    const result = await this.client.post(`/projects/${group}/issues`, body);
-    console.log('result----', result);
-    return result;
+    // const result = await this.client.post(`/projects/${group}/issues`, body);
+    // console.log('result----', result);
+    // return result;
   }
 }
 

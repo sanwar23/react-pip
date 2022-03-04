@@ -55,6 +55,9 @@ export default function MenuBtn() {
         <MenuItem onClick={() => handleRedirect('create-task')}>
           Create Issue
         </MenuItem>
+        <MenuItem onClick={() => handleRedirect('list-task')}>
+          List Issue
+        </MenuItem>
       </Menu>
     </div>
   );

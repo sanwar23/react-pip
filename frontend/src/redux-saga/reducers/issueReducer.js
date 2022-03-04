@@ -6,9 +6,12 @@ const initialState = {
   milestone: '',
   label: '',
   group: '',
+  success_grp: '',
+  status: '',
 };
 
 const issueReducer = (state = initialState, action) => {
+  console.log(action);
   switch (action.type) {
     case 'add_issue':
       return {
@@ -24,7 +27,8 @@ const issueReducer = (state = initialState, action) => {
     case 'submit_issue':
       return {
         ...state,
-        title: 'HIIIIIIIIIIIIIIIIIIIIIIII',
+        success_data: action.payload.data,
+        status: action.payload.status,
       };
 
     default:

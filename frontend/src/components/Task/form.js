@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { userAdd, issueAdd } from '../../redux-saga/actions';
 import { TextField, Typography, Grid, Button } from '@mui/material';
@@ -15,6 +15,7 @@ import ChipInput from 'material-ui-chip-input';
 import Stack from '@mui/material/Stack';
 
 import { convertToRaw, draftToHtml } from 'draft-js';
+import Notify from '../Notification';
 
 const useStyles = makeStyles({
   field: {
@@ -41,6 +42,7 @@ const Form = () => {
       title: '',
     },
   };
+
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -147,12 +149,12 @@ const Form = () => {
   };
 
   const submitForm = () => {
-    if (validateForm(task.errors)) {
-      if (handleValidation(task)) {
-        dispatch(issueAdd(task));
-      }
+    if (handleValidation(task)) {
+      dispatch(issueAdd(task));
     }
   };
+
+  const { success_data, status } = useSelector((state) => state.issues);
 
   return (
     <Grid container style={{ margin: '20px 0' }}>
@@ -161,7 +163,6 @@ const Form = () => {
           New Issue
         </Typography>
       </Grid>
-
       <Box
         style={{
           width: '100%',
@@ -377,6 +378,9 @@ const Form = () => {
           </form>
         </Grid>
       </Box>
+      {success_data && status && (
+        <Notify isOpen={true} message={success_data} type={status} />
+      )}
     </Grid>
   );
 };

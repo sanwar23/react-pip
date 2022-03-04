@@ -1,37 +1,20 @@
-import IssueService from '../requests/issue';
-import { select, put, call, all } from 'redux-saga/effects';
+import { postNewIssue } from '../requests/issue';
+import { put, call } from 'redux-saga/effects';
 import { submitIssue } from '../../actions';
 
 export function* handleSetIssue(action) {
   try {
-    const groups = action.payload.group;
+    const response = yield postNewIssue(action.payload);
 
-    // yield put(submitIssue('7897899'));
-    yield all(
-      groups.map((grp) => {
-        action.payload.group = grp;
-        console.log(action.payload);
-        const response = IssueService.postNewIssue(action.payload);
-
-        Promise.all([response])
-          .then((data) => {
-            console.log('promis--all--------', data[0].message);
-          })
-          .catch((res) => {
-            console.log('promis--error -------', res);
-          });
-      })
-    );
+    if (response.status == 200) {
+      yield put(submitIssue({ data: response.data, status: 'success' }));
+    }
   } catch (error) {
     console.log(error);
+    yield put(submitIssue({ data: 'error', status: 'error' }));
   }
 }
-
-const data = (d) => {
-  call(submitIssue('7897899'));
-  console.log(d);
-};
-
+/* 
 export function* handleSubmitIssue(action) {
   try {
     console.log('in submit issue');
@@ -43,3 +26,4 @@ export function* handleSubmitIssue(action) {
     console.log(error);
   }
 }
+ */

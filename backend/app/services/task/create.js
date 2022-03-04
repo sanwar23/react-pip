@@ -35,19 +35,26 @@ export class AddNewIssue extends ServiceBase {
     try {
       const issueParam = this.filteredArgs;
       console.log('---------- create js in');
-      let issueData = await TaskAction.addIssue(issueParam);
-      console.log('---------- create js out');
+      const issueData = await TaskAction.addIssue(issueParam);
+      console.log('========', issueData);
+      return issueData;
+
+      /* const issueData1 = await Promise.all(
+        issueData.map((promise) => promise())
+      ); */
+      // console.log('*****************', issueData1);
+      /* console.log('---------- create js out');
       console.log('eswwwrror------------', issueData);
 
       if (issueData !== null) {
         logger.info('Issue data is added successfully');
         return issueData.body;
       }
-      return `Issue data is added successfully`;
+      return `Issue data is added successfully`; */
     } catch (err) {
       console.log('eaaarror------------', err);
       // logger.error(err);
-      return false;
+      // return false;
     }
   }
 }

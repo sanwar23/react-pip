@@ -4,25 +4,38 @@ import { AddNewIssue } from '../services/task/';
 
 export default class TaskController {
   static async getAllTask(req, res) {
-    console.log('constoller --------  start');
+    let resultArr = [];
     const issue = await AddNewIssue.execute({
       ...req.body,
       ...req.query,
     });
-    console.log('constoller --------  end', issue);
-    // console.log('issuee----------', issue);
-    if (issue.result.project_id) {
-      res.status(200).json({
-        message: issue.result.project_id,
-        // message: 'Issue added successfull',
+    console.log('constoller --------  end', issue.result);
+    if (issue.result) {
+      const responseArray = await Promise.all(
+        issue.result.map((promise) => promise())
+      );
+
+      responseArray.map((res) => {
+        // console.log(res);
+        resultArr.push(res.body.project_id);
       });
-    } else {
-      res.status(401).json({ message: 'Issue adding failed' });
+      // console.log(res.statusCode);
+      // console.log('11111111111111', resultArr);
+
+      // console.log('issuee----------', issue);
+      if (resultArr) {
+        res.status(200).json({
+          data: resultArr,
+          message: 'Issue added successfull',
+        });
+      } else {
+        res.status(401).json({ message: 'Issue adding failed' });
+      }
     }
     /* if (issue.successful) {
-      Responder.success(res, issue.result);
-    } else {
-      Responder.failed(res, issue.errors);
+        Responder.success(res, issue.result);
+      } else {
+        Responder.failed(res, issue.errors);
     } */
   }
 }

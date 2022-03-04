@@ -97,11 +97,11 @@ const Home = () => {
   };
 
   const submitForm = () => {
-    if (validateForm(login.errors)) {
-      if (handleValidation(login)) {
-        dispatch(loginUser(login));
-      }
+    // if (validateForm(login.errors)) {
+    if (handleValidation(login)) {
+      dispatch(loginUser(login));
     }
+    // }
   };
 
   return (
