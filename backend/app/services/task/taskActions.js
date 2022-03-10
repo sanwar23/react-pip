@@ -30,8 +30,6 @@ class TaskActions {
       return () => this.createIssue(groupId, body);
     });
 
-    console.log('promissees ----------', promises);
-
     const response = await Promise.all(promises.map((promise) => promise()));
     const successIds = [];
     const errorIds = [];
@@ -75,9 +73,14 @@ class TaskActions {
   }
 
   async listIssue(params) {
-    const response = await this.axiosRequest.getRequest(
-      `/issues?page=${params.page}`
-    );
+    let url = `/issues?page=${params.page}`;
+
+    if (params.project_id && params.issue_id) {
+      url = `/projects/${params.project_id}/issues?page=${params.page}&iids[]=${params.issue_id}`;
+    } else if (params.project_id) {
+      url = `/projects/${params.project_id}/issues?page=${params.page}`;
+    }
+    const response = await this.axiosRequest.getRequest(url);
 
     const resData = {
       data: response.data,

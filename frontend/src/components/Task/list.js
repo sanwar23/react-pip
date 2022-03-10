@@ -4,6 +4,7 @@ import { listIssues } from '../../redux-saga/actions';
 import { Container, Box, ButtonGroup, Button } from '@material-ui/core';
 import Header from '../Header';
 import { Row } from './Row';
+import queryString from 'query-string';
 
 const List = () => {
   const dispatch = useDispatch();
@@ -12,7 +13,13 @@ const List = () => {
     issueList: { data: issuesList, pagination },
   } = useSelector((state) => state.issues);
 
-  const params = { page: '' };
+  const query = new URLSearchParams(window.location.search);
+
+  const project_id = query.get('project_id');
+
+  const issue_id = query.get('issue_id');
+
+  const params = { page: '', project_id: project_id, issue_id: issue_id };
 
   useEffect(() => {
     dispatch(listIssues(params));
@@ -24,7 +31,6 @@ const List = () => {
     } else if (page == 'prev') {
       params.page = pagination.prev_page;
     }
-    console.log(params);
 
     dispatch(listIssues(params));
   };

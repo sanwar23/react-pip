@@ -6,6 +6,12 @@ const constraints = {
   page: {
     presence: { allowEmpty: true },
   },
+  project_id: {
+    presence: { allowEmpty: true },
+  },
+  issue_id: {
+    presence: { allowEmpty: true },
+  },
 };
 
 export class ListIssue extends ServiceBase {
