@@ -19,8 +19,12 @@ const List = () => {
 
   const issue_id = query.get('issue_id');
 
-  const params = { page: '', project_id: project_id, issue_id: issue_id };
-
+  const params = {
+    page: '',
+    project_id: project_id == null ? '' : project_id,
+    issue_id: issue_id == null ? '' : issue_id,
+  };
+  console.log(params);
   useEffect(() => {
     dispatch(listIssues(params));
   }, []);
