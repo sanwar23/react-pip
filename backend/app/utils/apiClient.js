@@ -1,28 +1,43 @@
 import axios from 'axios';
-import configEnv from './config';
+import config from '../../config/app';
 import { handleResponse, handleReponseError } from './interceptors';
 
-const baseURL = configEnv.NODE_BASE_URL;
+const baseURL = config.get('gitlab.gitlabURL');
 
 class ApiClient {
-  constructor(axiosInst) {
+  constructor() {
+    const axiosInst = axios.create({
+      baseURL,
+    });
+
+    axiosInst.defaults.headers.common['Authorization'] = `Bearer ${config.get(
+      'gitlab.gitlabToken'
+    )}`;
+    axiosInst.defaults.withCredentials = true;
+    axiosInst.interceptors.response.use(handleResponse, handleReponseError);
     this.axios = axiosInst;
   }
 
-  makeRequest = async (url, method, data = {}, params) =>
-    this.axios({
+  makeRequest(url, method, data = {}, params) {
+    return this.axios({
       url,
       method,
       data,
       params,
     });
+  }
 
-  getRequest = async (url, config, params) =>
-    this.makeRequest(url, 'GET', config, params);
+  postRequest(url, data) {
+    return this.makeRequest(url, 'post', data);
+  }
 
+  getRequest(url, config, params) {
+    return this.makeRequest(url, 'GET', config, params);
+  }
+
+  /*
   putRequest = (url, config) => this.makeRequest(url, 'put', config);
 
-  postRequest = async (url, config) => this.makeRequest(url, 'post', config);
 
   deleteRequest = (url, config) => this.makeRequest(url, 'delete', config);
 
@@ -64,15 +79,20 @@ class ApiClient {
     });
 
     return response;
-  };
+  };*/
 }
-
+/*
 const axiosInst = axios.create({
   baseURL,
 });
+
+axiosInst.defaults.headers.common['Authorization'] = `Bearer ${config.get(
+  'gitlab.gitlabToken'
+)}`;
 axiosInst.defaults.withCredentials = true;
 axiosInst.interceptors.response.use(handleResponse, handleReponseError);
 
 export { axiosInst };
 
-export default new ApiClient(axiosInst);
+export default new ApiClient(axiosInst);*/
+module.exports = ApiClient;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { userAdd, issueAdd } from '../../redux-saga/actions';
+import { userAdd, issueAdd, clearIssue } from '../../redux-saga/actions';
 import { TextField, Typography, Grid, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import './styles.css';
@@ -12,9 +12,8 @@ import MUIRichTextEditor from 'mui-rte';
 import Chip from '@mui/material/Chip';
 import ChipInput from 'material-ui-chip-input';
 
-import Stack from '@mui/material/Stack';
-
-import { convertToRaw, draftToHtml } from 'draft-js';
+import { convertToRaw, ContentState } from 'draft-js';
+import { stateToHTML } from 'draft-js-export-html';
 import Notify from '../Notification';
 
 const useStyles = makeStyles({
@@ -48,6 +47,10 @@ const Form = () => {
   const history = useHistory();
 
   const [task, setTask] = useState(initialState);
+
+  const [content, setContent] = useState('');
+
+  const [chipval, setChipval] = useState([]);
 
   const myTheme = createTheme();
 
@@ -88,7 +91,7 @@ const Form = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
+    console.log('in handle change');
     setTask({
       ...task,
       [name]: value,
@@ -96,6 +99,9 @@ const Form = () => {
   };
 
   const handleChipInput = (value) => {
+    console.log(value);
+    console.log(chipval);
+    // setChipval(value);
     setTask({
       ...task,
       group: value,
@@ -114,11 +120,11 @@ const Form = () => {
   };
 
   const onEditorChange = (event) => {
-    const plainText = event.getCurrentContent().getPlainText();
+    const rteContent = stateToHTML(event.getCurrentContent());
 
     setTask({
       ...task,
-      description: plainText,
+      description: rteContent,
     });
   };
 
@@ -132,7 +138,7 @@ const Form = () => {
       formIsValid = false;
     }
 
-    if (task.group === '') {
+    if (task.group.length <= 0) {
       groupError = 'Group should Not be empty !!';
       formIsValid = false;
     }
@@ -154,7 +160,32 @@ const Form = () => {
     }
   };
 
-  const { success_data, status } = useSelector((state) => state.issues);
+  const { result_data, status } = useSelector((state) => state.issues);
+
+  if (status != '') {
+    const emptyState = ContentState.createFromText('');
+    const resetValue = JSON.stringify(convertToRaw(emptyState));
+
+    setContent(resetValue);
+    setChipval([]);
+
+    dispatch(clearIssue());
+
+    setTask(initialState);
+
+    setTask({
+      ...task,
+      title: '',
+      type: '',
+      description: '',
+      assignee: '',
+      milestone: '',
+      label: '',
+      group: '',
+    });
+    console.log(task);
+    // history.push('/list-task');
+  }
 
   return (
     <Grid container style={{ margin: '20px 0' }}>
@@ -240,6 +271,7 @@ const Form = () => {
               <Grid item sm={10}>
                 <ThemeProvider theme={myTheme}>
                   <MUIRichTextEditor
+                    defaultValue={content}
                     label="Type Description Here"
                     onChange={onEditorChange}
                   />
@@ -338,6 +370,7 @@ const Form = () => {
                   label="Group"
                   fullWidth={true}
                   name="group"
+                  defaultValue={chipval}
                   onChange={handleChipInput}
                   variant="outlined"
                 />
@@ -378,8 +411,8 @@ const Form = () => {
           </form>
         </Grid>
       </Box>
-      {success_data && status && (
-        <Notify isOpen={true} message={success_data} type={status} />
+      {result_data && (
+        <Notify isOpen={true} message={result_data} type="success" />
       )}
     </Grid>
   );

@@ -16,3 +16,10 @@
 .mtb-20 {
   margin: 20px 0;
 }
+
+.list-item {
+  margin: 0 0 0px 0 !important;
+  padding: 10px 10px 5px;
+  border: 1px solid #dbdbdb;
+  border-width: 0.5px 0 0 0;
+}

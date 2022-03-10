@@ -1,14 +1,11 @@
 import Request from '../../../lib/request';
 import config from '../../../config/app';
+import apiClient from '../../utils/apiClient';
+import { result } from 'validate.js';
 
 class TaskActions {
   constructor() {
-    const url = config.get('gitlab.gitlabURL');
-    const headers = {
-      Authorization: `Bearer ${config.get('gitlab.gitlabToken')}`,
-    };
-
-    this.client = new Request(url, headers);
+    this.axiosRequest = new apiClient();
   }
 
   async addIssue({
@@ -28,66 +25,74 @@ class TaskActions {
       label,
       milestone,
     };
-    console.log('---------- task action in');
 
     const promises = group.map((groupId) => {
-      return () => this.client.post(`/projects/${groupId}/issues`, body);
-      /* axios({
-           url: `${url}/projects/${groupId}/issues`,
-           method: 'post',
-           data: reqData,
-           headers: headers,
-         }); */
+      return () => this.createIssue(groupId, body);
     });
-    return promises;
-    // const responseArray = await Promise.all(
-    //   promises.map((promise) => promise())
-    // );
-    // console.log('))))))))))-----------)))))))))', responseArray.statusCode);
 
-    /*   let resultArr = [];
-    let arr = Promise.all(
-      group.map((grp) => {
-        const result = this.client.post(`/projects/${grp}/issues`, body);
-        console.log('---------- task action in loop');
+    console.log('promissees ----------', promises);
 
-        console.log('result----', result);
-        // resultArr.push(result);
-        // console.log('result----', result);
-        // return result;
-        // return Promise.all([result])
-        //   .then((values) => {
-        //     console.log('promis--all--------', values);
-        //     return values;
-        //     // resultArr.push(values);
-        //   })
-        //   .catch((res) => {
-        //     console.log('promis--error -------', res);
-        //     return res;
-        //     // resultArr.push(res);
-        //   });
+    const response = await Promise.all(promises.map((promise) => promise()));
+    const successIds = [];
+    const errorIds = [];
 
-        // console.log(resultArr);
+    let message = '';
 
-        // console.log('arrrr----', arr);
-      })
-    )
-      .then((values) => {
-        console.log('promis--all--------', values);
-        return values;
-        // resultArr.push(values);
-      })
-      .catch((res) => {
-        console.log('promis--error -------', res);
-        return res;
-        // resultArr.push(res);
-      });
-    console.log('---------- task action in end', arr); */
-    // return arr;
-    // return resultArr;
-    // const result = await this.client.post(`/projects/${group}/issues`, body);
-    // console.log('result----', result);
-    // return result;
+    response.map((res) => {
+      if (res.success) {
+        successIds.push(res.success);
+      } else if (res.error) {
+        errorIds.push(res.error);
+      }
+    });
+
+    const data = {
+      success_ids: successIds,
+      error_ids: errorIds,
+    };
+
+    if (successIds.length > 0)
+      message += ` Issues inserted - ${successIds.join(', ')}. `;
+
+    if (errorIds.length > 0)
+      message += ` Issues not inserted - ${errorIds.join(', ')}.`;
+
+    return message;
+  }
+
+  async createIssue(groupId, body) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await this.axiosRequest.postRequest(
+          `/projects/${groupId}/issues`,
+          body
+        );
+        resolve({ success: groupId });
+      } catch (err) {
+        resolve({ error: groupId });
+      }
+    });
+  }
+
+  async listIssue(params) {
+    const response = await this.axiosRequest.getRequest(
+      `/issues?page=${params.page}`
+    );
+
+    const resData = {
+      data: response.data,
+      page: {
+        current_page: response.headers['x-page'],
+        next_page: response.headers['x-next-page'],
+        prev_page: response.headers['x-prev-page'],
+        per_page: response.headers['x-per-page'],
+        total: response.headers['x-total'],
+        total_pages: response.headers['x-total-pages'],
+        current_page: response.headers['x-prev-page'],
+      },
+    };
+
+    return resData;
   }
 }
 

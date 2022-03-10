@@ -13,13 +13,16 @@ export default function Notify({ message, isOpen = false, type = 'success' }) {
     setOpen(false);
   };
 
-  message =
-    type == 'error'
-      ? 'Something went wrong please try again'
-      : `${message} Issues created sucessfully`;
-
   return (
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+    >
       <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
         {message}
       </Alert>

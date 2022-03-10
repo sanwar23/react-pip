@@ -18,7 +18,7 @@ class ApiClient {
       params,
     });
 
-  getRequest = async (url, config, params) =>
+  getRequest = (url, config, params) =>
     this.makeRequest(url, 'GET', config, params);
 
   putRequest = (url, config) => this.makeRequest(url, 'put', config);
