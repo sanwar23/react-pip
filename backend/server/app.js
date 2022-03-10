@@ -2,7 +2,6 @@ import config from '../config/app';
 import * as express from './express';
 import logger from '../app/common/logger';
 import db from '../app/db/models';
-import createSocketConnection from './socket';
 
 const closeAllProcesses = (server) => {
   console.log(
@@ -38,8 +37,6 @@ const start = async () => {
   const app = express.init();
 
   const server = app.listen(port, appStartMessage);
-
-  // createSocketConnection(server);
 
   process.on('SIGTERM', () => closeAllProcesses(server));
   process.on('SIGINT', () => closeAllProcesses(server));

@@ -6,12 +6,12 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import expressBoom from 'express-boom';
-import passport from 'passport';
+// import passport from 'passport';
 import cookieParser from 'cookie-parser';
 
 import initRoutes from '../routes';
-import db from '../app/db/models';
-import initPassport from '../app/middlewares/passport';
+// import db from '../app/db/models';
+// import initPassport from '../app/middlewares/passport';
 import logger from '../app/common/logger';
 import path from 'path';
 import config from '../config/app';
@@ -71,8 +71,8 @@ function initMiddleware() {
   app.use(
     session({ secret: 'keyboard cat', resave: true, saveUninitialized: true })
   );
-  app.use(passport.initialize());
-  app.use(passport.session());
+  /* app.use(passport.initialize());
+  app.use(passport.session()); */
 
   app.get('/', function (req, res) {
     res.render('login');
