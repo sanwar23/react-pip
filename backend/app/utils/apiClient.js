@@ -35,8 +35,9 @@ class ApiClient {
     return this.makeRequest(url, 'GET', config, params);
   }
 
-  /*
   putRequest = (url, config) => this.makeRequest(url, 'put', config);
+
+  /*
 
 
   deleteRequest = (url, config) => this.makeRequest(url, 'delete', config);

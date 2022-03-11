@@ -9,4 +9,8 @@ taskRouter.route('/create').post(isAuth, TaskController.createNewTask);
 
 taskRouter.route('/list').get(TaskController.getAllTask);
 
+taskRouter.route('/getissue').get(TaskController.getIssue);
+
+taskRouter.route('/update').put(TaskController.updateTask);
+
 export { taskRouter };

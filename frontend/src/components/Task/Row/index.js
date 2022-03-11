@@ -3,15 +3,18 @@ import { Typography, Grid, Icon } from '@mui/material';
 import { Box } from '@material-ui/core';
 import { getFullDateFromISO, getFromByDate } from '../../../utils/formateDate';
 import { ForumOutlined } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 
 const Row = ({ data }) => {
   return (
     <Grid container>
       <Grid container sm={12} className="list-item">
         <Grid item sm={6}>
-          <Typography variant="subtitle1" fontWeight="600">
-            {data.title}
-          </Typography>
+          <Link to={`/update-task/${data.project_id}/${data.iid}`}>
+            <Typography variant="subtitle1" fontWeight="600">
+              {data.title}
+            </Typography>
+          </Link>
           <Typography variant="subtitle1" color="#666666">
             {data.references.short}{' '}
             {' - Created ' + getFromByDate(data.created_at)}

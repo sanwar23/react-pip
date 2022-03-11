@@ -5,6 +5,13 @@ export const issueAdd = (params) => {
   };
 };
 
+export const issueUpdate = (params) => {
+  return {
+    type: 'update_issue',
+    payload: params,
+  };
+};
+
 export const submitIssue = (params) => {
   return {
     type: 'submit_issue',
@@ -20,9 +27,25 @@ export const listIssues = (params) => {
   };
 };
 
+export const getIssue = (params) => {
+  console.log(params);
+  return {
+    type: 'get_issue',
+    payload: params,
+  };
+};
+
 export const setIssues = (params) => {
   return {
     type: 'set_issues',
+    payload: params,
+  };
+};
+
+export const setIssue = (params) => {
+  console.log(params);
+  return {
+    type: 'set_issue',
     payload: params,
   };
 };

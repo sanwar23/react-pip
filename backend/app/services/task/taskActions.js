@@ -97,6 +97,85 @@ class TaskActions {
 
     return resData;
   }
+
+  async getIssue(params) {
+    let url = `/projects/${params.project_id}/issues/${params.issue_id}`;
+
+    const response = await this.axiosRequest.getRequest(url);
+
+    const resData = {
+      data: response.data,
+    };
+
+    return resData;
+  }
+
+  async updateIssue({
+    title,
+    group,
+    type,
+    description,
+    assignee,
+    label,
+    milestone,
+    issue_id,
+    project_id,
+  }) {
+    const body = {
+      title,
+      type,
+      description,
+      assignee,
+      label,
+      milestone,
+    };
+    console.log(body);
+
+    const promises = group.map((groupId) => {
+      return () => this.updateIssueReq(groupId, issue_id, project_id, body);
+    });
+
+    const response = await Promise.all(promises.map((promise) => promise()));
+    const successIds = [];
+    const errorIds = [];
+
+    let message = '';
+
+    response.map((res) => {
+      if (res.success) {
+        successIds.push(res.success);
+      } else if (res.error) {
+        errorIds.push(res.error);
+      }
+    });
+
+    const data = {
+      success_ids: successIds,
+      error_ids: errorIds,
+    };
+
+    if (successIds.length > 0)
+      message += ` Issues inserted - ${successIds.join(', ')}. `;
+
+    if (errorIds.length > 0)
+      message += ` Issues not inserted - ${errorIds.join(', ')}.`;
+
+    return message;
+  }
+
+  async updateIssueReq(groupId, issue_id, project_id, body) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await this.axiosRequest.putRequest(
+          `/projects/${groupId}/issues/${issue_id}`,
+          body
+        );
+        resolve({ success: groupId });
+      } catch (err) {
+        resolve({ error: groupId });
+      }
+    });
+  }
 }
 
 module.exports = new TaskActions();
